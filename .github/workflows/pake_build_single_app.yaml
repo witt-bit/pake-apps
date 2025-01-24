@@ -115,17 +115,25 @@ jobs:
             node_modules/pake-cli/src-tauri/target/
           key: ${{ inputs.platform }}-cargo-${{ hashFiles('node_modules/pake-cli/src-tauri/Cargo.lock') }}
 
-      - name: Install dependencies
-        run: |
-          npm install shelljs
-          npm install axios
+      #  克隆https://github.com/tw93/Pake仓库
+      - name: Checkout another repository
+        uses: actions/checkout@v3
+        with:
+          repository: tw93/Pake
+          path: Pake
 
       - name: Build with pake-cli
         run: |
-          curl \
-            https://raw.githubusercontent.com/tw93/Pake/refs/heads/main/script/build_with_pake_cli.js \
-            -o build_with_pake_cli.js
-          node ./build_with_pake_cli.js
+          echo '--- Page ---'
+          cd Pake;
+
+          echo '--- Install Pake dependencies ---'
+
+          npm install shelljs axios
+
+          echo '--- Build with pake-cli ---'
+
+          node ./script/build_with_pake_cli.js
         env:
           URL: ${{ inputs.url }}
           NAME: ${{ inputs.name }}
