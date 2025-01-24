@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: tw93/Pake
-          path: ./
+          path: Pake
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -87,7 +87,7 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            src-tauri/target/
+            Pake/src-tauri/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Config App
@@ -97,15 +97,14 @@ jobs:
           NAME_ZH: ${{ inputs.name_zh }}
           URL: ${{ inputs.url }}
         run: |
-          pwd;
-          ls -al;
-          echo '-----------';
+          cd Pake
           npm install
           npm run build:config
 
       - name: Build for Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
+          cd Pake
           npm run tauri build
           mkdir -p output/linux
           mv src-tauri/target/release/bundle/deb/*.deb output/linux/${{inputs.title}}_`arch`.deb
@@ -114,6 +113,7 @@ jobs:
       - name: Build for macOS
         if: matrix.os == 'macos-latest'
         run: |
+          cd Pake
           rustup target add aarch64-apple-darwin
           rustup target add x86_64-apple-darwin
           npm run tauri build -- --target universal-apple-darwin
@@ -123,6 +123,7 @@ jobs:
       - name: Build for Windows
         if: matrix.os == 'windows-latest'
         run: |
+          cd Pake
           npm run tauri build -- --target x86_64-pc-windows-msvc
           New-Item -Path "output\windows" -ItemType Directory
           Move-Item -Path "src-tauri\target\x86_64-pc-windows-msvc\release\bundle\msi\*.msi" -Destination "output\windows\${{inputs.title}}_x64.msi"
@@ -130,6 +131,7 @@ jobs:
       - name: Restore Cargo Lock File(Windows Only)
         if: matrix.os == 'windows-latest'
         run: |
+          cd Pake
           git checkout -- src-tauri/Cargo.lock
 
       - name: Rust cache store
@@ -140,14 +142,14 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            src-tauri/target/
+            Pake/src-tauri/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Upload For Single Build
         uses: actions/upload-artifact@v4
         if: startsWith(github.ref, 'refs/tags/') != true
         with:
-          path: 'output/*/*.*'
+          path: 'Pake/output/*/*.*'
 
       # - name: Upload For Release
       #   # arg info: https://github.com/ncipollo/release-action#release-action
