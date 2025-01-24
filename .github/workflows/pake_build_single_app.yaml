@@ -97,6 +97,9 @@ jobs:
           NAME_ZH: ${{ inputs.name_zh }}
           URL: ${{ inputs.url }}
         run: |
+          pwd;
+          ls -al;
+          echo '-----------';
           npm install
           npm run build:config
 
