@@ -97,11 +97,12 @@ jobs:
           packages: libjavascriptcoregtk-4.1-dev libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev gnome-video-effects gnome-video-effects-extra
           version: 1.1
 
-      - name: Install pake-cli local
-        shell: bash
-        run: |
-          echo "install pake on local"
-          npm install pake-cli
+      #  克隆https://github.com/tw93/Pake仓库
+      - name: Checkout another repository
+        uses: actions/checkout@v3
+        with:
+          repository: tw93/Pake
+          path: Pake
 
       - name: Rust cache restore
         uses: actions/cache/restore@v3
@@ -112,15 +113,8 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            node_modules/pake-cli/src-tauri/target/
-          key: ${{ inputs.platform }}-cargo-${{ hashFiles('node_modules/pake-cli/src-tauri/Cargo.lock') }}
-
-      #  克隆https://github.com/tw93/Pake仓库
-      - name: Checkout another repository
-        uses: actions/checkout@v3
-        with:
-          repository: tw93/Pake
-          path: Pake
+            Pake/node_modules/pake-cli/src-tauri/target/
+          key: ${{ inputs.platform }}-cargo-${{ hashFiles('Pake/node_modules/pake-cli/src-tauri/Cargo.lock') }}
 
       - name: Build with pake-cli
         run: |
@@ -129,7 +123,7 @@ jobs:
 
           echo '--- Install Pake dependencies ---'
 
-          npm install shelljs axios
+          npm install pake-cli shelljs axios
 
           echo '--- Build with pake-cli ---'
 
@@ -161,5 +155,5 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            node_modules/pake-cli/src-tauri/target/
-          key: ${{ inputs.platform }}-cargo-${{ hashFiles('node_modules/pake-cli/src-tauri/Cargo.lock') }}
+            Pake/node_modules/pake-cli/src-tauri/target/
+          key: ${{ inputs.platform }}-cargo-${{ hashFiles('Pake/node_modules/pake-cli/src-tauri/Cargo.lock') }}
