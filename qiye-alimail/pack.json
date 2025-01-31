@@ -1,0 +1,10 @@
+{
+    "url": "https://qiye.aliyun.com",
+    "name": "alimail",
+    "icon": "logo.png",
+    "width": 1200,
+    "height": 780,
+    "fullscreen": false,
+    "hideTitleBar": false,
+    "inject": []
+}
